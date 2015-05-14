@@ -21,7 +21,7 @@
         	<![endif]-->
 	    <div id="mainArticle">
 			<h1>Moray Creative Movie Search</h1>
-			<p>Demo using www.themoviedb.org API and JSON to search movies and show Title, Poster, and Release Date as result.</p>
+			<p>Demo using www.themoviedb.org API and JSON to search movies and show Title, Overview, Poster, and Release Date as result.</p>
 		</div>
 		<input id="term" type="text" />
 		<button id="search">Search</button>
@@ -101,6 +101,7 @@
 				                            console.log(json.overview);
 				                            $Container.find('.overview').text(json.overview);
 				                            $Container.show();
+				                            $('#term').val("");
 				                        },
 				                        error: function(e) {}
 				                    }).done();
