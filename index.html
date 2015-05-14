@@ -23,133 +23,96 @@
 			<h1>Moray Creative Movie Search</h1>
 			<p>Demo using www.themoviedb.org API and JSON to search movies and show Title, Poster, and Release Date as result.</p>
 		</div>
-		<input id="movie" type="text" />
-		<button class="myButton">Search</button>
+		<input id="term" type="text" />
+		<button id="search">Search</button>
+
+
+
 		<div id="movie-results">
+			<div class="moviebox">
+				<div class="left"></div>
+				<div class="right">
+					<h3 class="title"></h3>
+					<p class="releaseDate"></p>
+					<p class="overview"></p>
+
+				</div>
+			</div>	
 		</div>
 
-		<!--
-
-					<form>
-			    <label>
-			        <input type="text" name="movie" placeholder="movie title" />
-			    </label>
-			    <button id="myButton">Go!</button>
-			</form>
-
-			<div id="container">
-				<div id="right">
-				    <h3 class="title">Title</h3>
-				    <span class="year">Year</span>
-				    <p class="plot">Plot</p>
-				</div>
-				<div id="left">    
-				    <span class="poster">Poster</span>
-				</div>    
-			</div>
-	    </div>-->
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 		<script>
-		$(function() {
+
+		$Container = $('#movie-results');
+		$Container.hide();//hides container div until called
+		$('#term').keypress(function(e){
+	      if(e.which == 13){//Enter key pressed
+	         $('#search').click();//Trigger search button click event
+	      }
+	 	});
+		$(document).ready(function(){
 		    var url = 'http://api.themoviedb.org/3/',
-		        mode = 'search/movie',
-		        input,
-		        movieName,
-		        key = '?api_key=470fd2ec8853e25d2f8d86f685d2270e';
+		            mode = 'search/movie?query=',
+		            input,
+		            movieName,
+		            key = '&api_key=470fd2ec8853e25d2f8d86f685d2270e';
 
-		    $('button').click(function() {
-		        $('#movie-results').empty();
-		        var input = $('#movie').val(),
-		            movieName = encodeURI(input);
-		        $.ajax({
-		            url: url + mode + key + '&query='+ movieName ,
-		            dataType: 'jsonp',
-		            success: searchCallback
-		        });
-		        $('#movie').val("");
+		    $('#search').on('click', function() {
+		        var input = $('#term').val(),
+		                movieName = encodeURI(input);
+
+				$.ajax({
+				            type: 'GET',
+				            url: url + mode + input + key,
+				            async: false,
+				            cache: false,
+				            jsonpCallback: 'testing',
+				            contentType: 'application/json',
+				            dataType: 'jsonp',
+				            success: function(json) {
+				                jQuery.each(json.results, function (key, val) {
+				                    console.log(json.results[key].id);
+				                });
+				                console.log(json);
+				                //stores data from first slot into container
+								$Container.find('.title').text(json.results[0].original_title);
+								$Container.find('.releaseDate').text(json.results[0].release_date);
+					            //$Container.find('.plot').text(oData.Plot);
+
+  								//checks to see if photo exists
+								if (json.results[0].poster_path == null) {
+									$Container.find('.left').html('<img src="img/showimage.jpg"' + ' alt="' + json.results[0].original_title +'" height="150" width="100">');
+								} else {
+								    $Container.find('.left').html('<img src="https://image.tmdb.org/t/p/w396' + json.results[0].poster_path + '" alt="' + json.results[0].original_title +'" height="150" width="100">');
+								}
+
+				                var first = json.results[0].id;
+				                console.log(first);
+				                    $.ajax({
+				                        type: 'GET',
+				                        url: url + 'movie/' + first + '?' + key,
+				                        async: false,
+				                        cache: false,
+				                        jsonpCallback: 'testing',
+				                        contentType: 'application/json',
+				                        dataType: 'jsonp',
+				                        success: function(json) {
+				                            console.log(json.overview);
+				                            $Container.find('.overview').text(json.overview);
+				                            $Container.show();
+				                        },
+				                        error: function(e) {}
+				                    }).done();
+				            },
+				            error: function(e) {}
+				        }).done();
 		    });
-		    //adds lister to enter key press
-			    $('#movie').keypress(function(e){
-	       			 if(e.which == 13){//Enter key pressed
-	           		 $('button').click();//Trigger search button click event
-	        		 }
-	    		});
+
 		});
-
-
-			function searchCallback(data) {
-				console.log(data);
-				var movies = data.results;
-				var output ='';
-					if (movies == 0){
-						$('#movie-results').html("No Results Found");
-					}else{
-							 $.each(movies, function(index, movie) {
-							   output += '<div class="moviebox">';
-							   output += '<div class="right">';
-							   output += '<h3>' + movie.original_title + '</h3>';
-							   //checks to see if release date exists
-									if (movie.release_date == "") {
-									  output += '<p>No release date available</p>';
-									  } else {
-								      output += '<p>' + movie.release_date + '</p>';
-									  }
-							   output += '</div>';
-							   output += '<div class="left">';
-
-				  
-								      //checks to see if photo exists
-									if (movie.poster_path == null) {
-									  output += '<img src="img/showimage.jpg"' + ' alt="' + movie.original_title +'" height="150" width="100">';
-									} else {
-								    output += '<a href="https://image.tmdb.org/t/p/w396' + movie.poster_path + '"><img src="https://image.tmdb.org/t/p/w396' + movie.poster_path + '" alt="' + movie.original_title +'" height="150" width="100"></a>';
-									}
-								output += '</div>';	
-								output += '</div>';
-							 });
-						$('#movie-results').html(output);
-					}	
-			}
-
-
 		</script>
 		</body>
-<!--
 
-
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-		<script>
-			var $Form = $('form'), $Container = $('#container');
-
-			$Container.hide();//hides container div until called
-			$Form.on('submit', function(p_oEvent){
-			    var sUrl, 
-			    	sMovie, 
-			    	oData;
-			    p_oEvent.preventDefault();
-				sMovie = $Form.find('input').val();//gets movie string from input field
-			    sUrl = 'http://www.omdbapi.com/?t=' + sMovie + '&type=movie&tomatoes=true'
-			    $.ajax(sUrl, {
-			        complete: function(p_oXHR, p_sStatus){
-			            oData = $.parseJSON(p_oXHR.responseText);//pulls in object
-			            console.log(oData);
-			            $Container.find('.title').text(oData.Title);
-			            $Container.find('.plot').text(oData.Plot);
-			            $Container.find('.poster').html('<img src="' + oData.Poster + '"/>');
-			            $Container.find('.year').text(oData.Year);
-			            $Container.show();
-			        }
-			        
-			    });    
-			});
-
-		</script>
-
-
-
-
--->
 </html>
 
 
