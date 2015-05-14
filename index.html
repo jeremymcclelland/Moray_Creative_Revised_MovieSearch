@@ -1,0 +1,161 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>Moray Creative Movie Search</title>
+		<meta name="description" content="Moray Creative Movie Search">
+		<link rel="icon" href="img/favicon.png">
+		<link rel="stylesheet" href="css/normalize.min.css">
+		<link rel="stylesheet" href="css/styles.css">
+
+
+	</head>
+
+		<body>
+			<!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        	<![endif]-->
+	    <div id="mainArticle">
+			<h1>Moray Creative Movie Search</h1>
+			<p>Demo using www.themoviedb.org API and JSON to search movies and show Title, Poster, and Release Date as result.</p>
+		</div>
+		<input id="movie" type="text" />
+		<button class="myButton">Search</button>
+		<div id="movie-results">
+		</div>
+
+		<!--
+
+					<form>
+			    <label>
+			        <input type="text" name="movie" placeholder="movie title" />
+			    </label>
+			    <button id="myButton">Go!</button>
+			</form>
+
+			<div id="container">
+				<div id="right">
+				    <h3 class="title">Title</h3>
+				    <span class="year">Year</span>
+				    <p class="plot">Plot</p>
+				</div>
+				<div id="left">    
+				    <span class="poster">Poster</span>
+				</div>    
+			</div>
+	    </div>-->
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+		<script>
+		$(function() {
+		    var url = 'http://api.themoviedb.org/3/',
+		        mode = 'search/movie',
+		        input,
+		        movieName,
+		        key = '?api_key=470fd2ec8853e25d2f8d86f685d2270e';
+
+		    $('button').click(function() {
+		        $('#movie-results').empty();
+		        var input = $('#movie').val(),
+		            movieName = encodeURI(input);
+		        $.ajax({
+		            url: url + mode + key + '&query='+ movieName ,
+		            dataType: 'jsonp',
+		            success: searchCallback
+		        });
+		        $('#movie').val("");
+		    });
+		    //adds lister to enter key press
+			    $('#movie').keypress(function(e){
+	       			 if(e.which == 13){//Enter key pressed
+	           		 $('button').click();//Trigger search button click event
+	        		 }
+	    		});
+		});
+
+
+			function searchCallback(data) {
+				console.log(data);
+				var movies = data.results;
+				var output ='';
+					if (movies == 0){
+						$('#movie-results').html("No Results Found");
+					}else{
+							 $.each(movies, function(index, movie) {
+							   output += '<div class="moviebox">';
+							   output += '<div class="right">';
+							   output += '<h3>' + movie.original_title + '</h3>';
+							   //checks to see if release date exists
+									if (movie.release_date == "") {
+									  output += '<p>No release date available</p>';
+									  } else {
+								      output += '<p>' + movie.release_date + '</p>';
+									  }
+							   output += '</div>';
+							   output += '<div class="left">';
+
+				  
+								      //checks to see if photo exists
+									if (movie.poster_path == null) {
+									  output += '<img src="img/showimage.jpg"' + ' alt="' + movie.original_title +'" height="150" width="100">';
+									} else {
+								    output += '<a href="https://image.tmdb.org/t/p/w396' + movie.poster_path + '"><img src="https://image.tmdb.org/t/p/w396' + movie.poster_path + '" alt="' + movie.original_title +'" height="150" width="100"></a>';
+									}
+								output += '</div>';	
+								output += '</div>';
+							 });
+						$('#movie-results').html(output);
+					}	
+			}
+
+
+		</script>
+		</body>
+<!--
+
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+		<script>
+			var $Form = $('form'), $Container = $('#container');
+
+			$Container.hide();//hides container div until called
+			$Form.on('submit', function(p_oEvent){
+			    var sUrl, 
+			    	sMovie, 
+			    	oData;
+			    p_oEvent.preventDefault();
+				sMovie = $Form.find('input').val();//gets movie string from input field
+			    sUrl = 'http://www.omdbapi.com/?t=' + sMovie + '&type=movie&tomatoes=true'
+			    $.ajax(sUrl, {
+			        complete: function(p_oXHR, p_sStatus){
+			            oData = $.parseJSON(p_oXHR.responseText);//pulls in object
+			            console.log(oData);
+			            $Container.find('.title').text(oData.Title);
+			            $Container.find('.plot').text(oData.Plot);
+			            $Container.find('.poster').html('<img src="' + oData.Poster + '"/>');
+			            $Container.find('.year').text(oData.Year);
+			            $Container.show();
+			        }
+			        
+			    });    
+			});
+
+		</script>
+
+
+
+
+-->
+</html>
+
+
+
+
+
+
+
+
