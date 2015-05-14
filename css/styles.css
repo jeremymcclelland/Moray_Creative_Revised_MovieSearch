@@ -6,8 +6,14 @@ body {
   color: #002d56;
   text-align: center;
 }
+
+#movie-results{
+  margin-top: 20px;
+}
+
 #mainArticle {
   text-align: center;
+
 }
 #movie {
   padding: 2px;
@@ -23,8 +29,8 @@ body {
   padding: 10px;
   margin: 0 auto 20px auto;
   width: 400px;
-  height: 150px;
   text-align: left;
+  display: inline-block;
 }
 .left {
   float: left;
@@ -34,10 +40,19 @@ body {
   width: 290px;
 }
 h3 {
-  margin: 0 0 10px 0;
+  margin: 0 0 5px 0;
+}
+
+.releaseDate {
+  margin: 0px;
+}
+
+.overview{
+  font-size: .85em;
+  margin: 5px 0 0 0;
 }
 /*button style*/
-.myButton {
+#search {
   -moz-box-shadow: inset 0px 1px 0px 0px #cf866c;
   -webkit-box-shadow: inset 0px 1px 0px 0px #cf866c;
   box-shadow: inset 0px 1px 0px 0px #cf866c;
@@ -63,7 +78,7 @@ h3 {
   text-shadow: 0px 1px 0px #854629;
   margin-left: 10px;
 }
-.myButton:hover {
+#search:hover {
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #bc3315), color-stop(1, #d0451b));
   background: -moz-linear-gradient(top, #bc3315 5%, #d0451b 100%);
   background: -webkit-linear-gradient(top, #bc3315 5%, #d0451b 100%);
@@ -73,7 +88,7 @@ h3 {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#bc3315', endColorstr='#d0451b', GradientType=0);
   background-color: #bc3315;
 }
-.myButton:active {
+#search:active {
   position: relative;
   top: 1px;
 }
